@@ -80,4 +80,7 @@ dependencies {
 
     // WebSocket
     implementation(libs.okhttp)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 }
