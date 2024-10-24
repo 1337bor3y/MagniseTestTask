@@ -1,4 +1,4 @@
-package com.example.magnisetesttask.ui.theme
+package com.example.magnisetesttask.core.theme
 
 import androidx.compose.ui.graphics.Color
 
