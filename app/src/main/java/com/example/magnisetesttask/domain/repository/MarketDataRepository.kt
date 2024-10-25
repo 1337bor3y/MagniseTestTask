@@ -9,7 +9,7 @@ interface MarketDataRepository {
 
     suspend fun getSymbols(): List<Symbol>
 
-    suspend fun getMarketData(instrumentId: String): Flow<MarketData>
+    fun getMarketData(instrumentId: String): Flow<MarketData>
 
     suspend fun getHistoricalPrices(instrumentId: String, startDate: String): List<HistoricalPrice>
 }

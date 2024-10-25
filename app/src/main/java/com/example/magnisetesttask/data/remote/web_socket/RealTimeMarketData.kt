@@ -17,7 +17,7 @@ import javax.inject.Inject
 class RealTimeMarketData @Inject constructor(
     private val client: OkHttpClient
 ) {
-    suspend fun getRealTimeMarketData(instrumentId: String): Flow<RealTimeData> = callbackFlow {
+    fun getRealTimeMarketData(instrumentId: String): Flow<RealTimeData> = callbackFlow {
         val request = Request.Builder()
             .url(Constants.BASE_WEB_SOCKET_URL)
             .build()

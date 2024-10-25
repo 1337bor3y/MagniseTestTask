@@ -34,7 +34,7 @@ class MarketDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMarketData(instrumentId: String) =
+    override fun getMarketData(instrumentId: String) =
         realTimeMarketData.getRealTimeMarketData(instrumentId).map {
             MarketData(
                 price = it.price,

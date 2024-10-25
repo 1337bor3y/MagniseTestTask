@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.magnisetesttask.core.theme.MagniseTestTaskTheme
+import com.example.magnisetesttask.presentation.MarketDataScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -14,6 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MagniseTestTaskTheme {
+                MarketDataScreen()
             }
         }
     }
