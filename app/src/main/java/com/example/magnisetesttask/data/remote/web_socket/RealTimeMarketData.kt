@@ -24,28 +24,21 @@ class RealTimeMarketData @Inject constructor(
     private val client = OkHttpClient()
 
     suspend fun getRealTimeMarketData(instrumentId: String): Flow<RealTimeData> = callbackFlow {
-        var token = fintachartsApi.getToken(
-            realm = "fintatech",
-            username = "r_test@fintatech.com",
-            password = "kisfiz-vUnvy9-sopnyv"
-        ).accessToken
+        var token = accessTokenStorage.getToken()
 
-//        if (accessTokenStorage.isTokenExpired()) {
-//            try {
-//                val response = fintachartsApi.getToken(
-//                    realm = "fintatech",
-//                    request = TokenRequest(
-//                        username = "r_test@fintatech.com",
-//                        password = "kisfiz-vUnvy9-sopnyv"
-//                    )
-//                )
-//                token = response.accessToken
-//                Log.d("RealTimeMarketData", response.toString())
-//                accessTokenStorage.saveToken(token, response.expiresIn)
-//            } catch (e: Exception) {
-//                e.localizedMessage?.let { Log.d("RealTimeMarketData", it) }
-//            }
-//        }
+        if (accessTokenStorage.isTokenExpired()) {
+            try {
+                val response = fintachartsApi.getToken(
+                    realm = "fintatech",
+                    username = "r_test@fintatech.com",
+                    password = "kisfiz-vUnvy9-sopnyv"
+                )
+                token = response.accessToken
+                accessTokenStorage.saveToken(token, response.expiresIn)
+            } catch (e: Exception) {
+                e.localizedMessage?.let { Log.d("RealTimeMarketData", it) }
+            }
+        }
 
         val request = Request.Builder()
             .url(Constants.BASE_WEB_SOCKET_URL + token)
