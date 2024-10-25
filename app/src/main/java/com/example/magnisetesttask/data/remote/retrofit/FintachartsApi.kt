@@ -1,12 +1,12 @@
-package com.example.magnisetesttask.data.remote
+package com.example.magnisetesttask.data.remote.retrofit
 
-import com.example.magnisetesttask.data.remote.dto.CountBackResponse
-import com.example.magnisetesttask.data.remote.dto.DateRangeResponse
-import com.example.magnisetesttask.data.remote.dto.ExchangesResponse
-import com.example.magnisetesttask.data.remote.dto.InstrumentsResponse
-import com.example.magnisetesttask.data.remote.dto.ProvidersResponse
-import com.example.magnisetesttask.data.remote.dto.TokenRequest
-import com.example.magnisetesttask.data.remote.dto.TokenResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.CountBackResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.DateRangeResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.ExchangesResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.InstrumentsResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.ProvidersResponse
+import com.example.magnisetesttask.data.remote.retrofit.dto.TokenRequest
+import com.example.magnisetesttask.data.remote.retrofit.dto.TokenResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

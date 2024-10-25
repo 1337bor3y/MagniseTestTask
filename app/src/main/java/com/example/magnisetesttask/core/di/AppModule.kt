@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.magnisetesttask.core.util.Constants
 import com.example.magnisetesttask.data.local.AccessTokenStorage
 import com.example.magnisetesttask.data.local.DataStoreAccessTokenStorage
-import com.example.magnisetesttask.data.remote.FintachartsApi
+import com.example.magnisetesttask.data.remote.retrofit.FintachartsApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

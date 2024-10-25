@@ -1,4 +1,4 @@
-package com.example.magnisetesttask.data.remote.dto
+package com.example.magnisetesttask.data.remote.retrofit.dto
 
 data class DateRangeResponse(
     val data: List<DateRangeData>
