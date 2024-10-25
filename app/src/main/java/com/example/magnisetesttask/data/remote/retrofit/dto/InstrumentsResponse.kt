@@ -1,60 +1,63 @@
 package com.example.magnisetesttask.data.remote.retrofit.dto
 
+import com.google.gson.annotations.SerializedName
+
+
 data class InstrumentsResponse(
-    val data: List<InstrumentsData>,
-    val paging: Paging
+    @SerializedName("data") val data: List<InstrumentsData>,
+    @SerializedName("paging") val paging: Paging
 )
 
 data class InstrumentsData(
-    val baseCurrency: String,
-    val currency: String,
-    val description: String,
-    val id: String,
-    val kind: String,
-    val mappings: Mappings,
-    val profile: Profile,
-    val symbol: String,
-    val tickSize: Double
+    @SerializedName("base_currency") val baseCurrency: String,
+    @SerializedName("currency") val currency: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("id") val id: String,
+    @SerializedName("kind") val kind: String,
+    @SerializedName("mappings") val mappings: Mappings,
+    @SerializedName("profile") val profile: Profile,
+    @SerializedName("symbol") val symbol: String,
+    @SerializedName("tick_size") val tickSize: Double
 )
 
 data class Profile(
-    val gics: List<String>,
-    val name: String
+    @SerializedName("gics") val gics: List<String>,
+    @SerializedName("name") val name: String
 )
 
 data class Paging(
-    val items: Int,
-    val page: Int,
-    val pages: Int
+    @SerializedName("items") val items: Int,
+    @SerializedName("page") val page: Int,
+    @SerializedName("pages") val pages: Int
 )
 
 data class Mappings(
-    val activeTick: ActiveTick,
-    val dxfeed: Dxfeed,
-    val oanda: Oanda,
-    val simulation: Simulation
+    @SerializedName("active_tick") val activeTick: ActiveTick,
+    @SerializedName("dxfeed") val dxfeed: Dxfeed,
+    @SerializedName("oanda") val oanda: Oanda,
+    @SerializedName("simulation") val simulation: Simulation
 )
 
 data class ActiveTick(
-    val defaultOrderSize: Int,
-    val exchange: String,
-    val symbol: String
+    @SerializedName("default_order_size") val defaultOrderSize: Int,
+    @SerializedName("exchange") val exchange: String,
+    @SerializedName("symbol") val symbol: String
 )
 
 data class Dxfeed(
-    val defaultOrderSize: Int,
-    val exchange: String,
-    val symbol: String
+    @SerializedName("default_order_size") val defaultOrderSize: Int,
+    @SerializedName("exchange") val exchange: String,
+    @SerializedName("symbol") val symbol: String
 )
 
 data class Oanda(
-    val defaultOrderSize: Int,
-    val exchange: String,
-    val symbol: String
+    @SerializedName("default_order_size") val defaultOrderSize: Int,
+    @SerializedName("exchange") val exchange: String,
+    @SerializedName("symbol") val symbol: String
 )
 
 data class Simulation(
-    val defaultOrderSize: Int,
-    val exchange: String,
-    val symbol: String
+    @SerializedName("default_order_size") val defaultOrderSize: Int,
+    @SerializedName("exchange") val exchange: String,
+    @SerializedName("symbol") val symbol: String
 )

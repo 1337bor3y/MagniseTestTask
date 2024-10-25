@@ -4,8 +4,6 @@ import android.util.Log
 import com.example.magnisetesttask.core.util.Constants
 import com.example.magnisetesttask.data.local.AccessTokenStorage
 import com.example.magnisetesttask.data.remote.retrofit.FintachartsApi
-import com.example.magnisetesttask.data.remote.retrofit.dto.TokenRequest
-import com.example.magnisetesttask.data.remote.web_socket.dto.Last
 import com.example.magnisetesttask.data.remote.web_socket.dto.RealTimeData
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -26,23 +24,28 @@ class RealTimeMarketData @Inject constructor(
     private val client = OkHttpClient()
 
     suspend fun getRealTimeMarketData(instrumentId: String): Flow<RealTimeData> = callbackFlow {
-        var token = accessTokenStorage.getToken()
+        var token = fintachartsApi.getToken(
+            realm = "fintatech",
+            username = "r_test@fintatech.com",
+            password = "kisfiz-vUnvy9-sopnyv"
+        ).accessToken
 
-        if (accessTokenStorage.isTokenExpired()) {
-            try {
-                val response = fintachartsApi.getToken(
-                    realm = "fintatech",
-                    request = TokenRequest(
-                        username = "r_test@fintatech.com",
-                        password = "kisfiz-vUnvy9-sopnyv"
-                    )
-                )
-                token = response.accessToken
-                accessTokenStorage.saveToken(token, response.expiresIn)
-            } catch (e: Exception) {
-                e.localizedMessage?.let { Log.d("RealTimeMarketData", it) }
-            }
-        }
+//        if (accessTokenStorage.isTokenExpired()) {
+//            try {
+//                val response = fintachartsApi.getToken(
+//                    realm = "fintatech",
+//                    request = TokenRequest(
+//                        username = "r_test@fintatech.com",
+//                        password = "kisfiz-vUnvy9-sopnyv"
+//                    )
+//                )
+//                token = response.accessToken
+//                Log.d("RealTimeMarketData", response.toString())
+//                accessTokenStorage.saveToken(token, response.expiresIn)
+//            } catch (e: Exception) {
+//                e.localizedMessage?.let { Log.d("RealTimeMarketData", it) }
+//            }
+//        }
 
         val request = Request.Builder()
             .url(Constants.BASE_WEB_SOCKET_URL + token)
@@ -68,16 +71,9 @@ class RealTimeMarketData @Inject constructor(
 
                 jsonResponse.optJSONObject("last")?.let {
                     val realTimeData = RealTimeData(
-                        type = jsonResponse.getString("type"),
                         instrumentId = jsonResponse.getString("instrumentId"),
-                        provider = jsonResponse.getString("provider"),
-                        last = Last(
-                            timestamp = it.getString("timestamp"),
-                            price = it.getDouble("price"),
-                            volume = it.getInt("volume"),
-                            change = it.getDouble("change"),
-                            changePct = it.getDouble("changePct")
-                        )
+                        timestamp = it.getString("timestamp"),
+                        price = it.getDouble("price"),
                     )
 
                     trySend(realTimeData).isSuccess

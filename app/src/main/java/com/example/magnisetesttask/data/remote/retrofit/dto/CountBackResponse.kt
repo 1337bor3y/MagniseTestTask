@@ -1,14 +1,16 @@
 package com.example.magnisetesttask.data.remote.retrofit.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class CountBackResponse(
-    val data: List<CountBackData>
+    @SerializedName("data") val data: List<CountBackData>
 )
 
 data class CountBackData(
-    val c: Double,
-    val h: Double,
-    val l: Double,
-    val o: Double,
-    val t: String,
-    val v: Int
+    @SerializedName("c") val close: Double,
+    @SerializedName("h") val high: Double,
+    @SerializedName("l") val low: Double,
+    @SerializedName("o") val open: Double,
+    @SerializedName("t") val timestamp: String,
+    @SerializedName("v") val volume: Int
 )

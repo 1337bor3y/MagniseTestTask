@@ -1,14 +1,16 @@
 package com.example.magnisetesttask.data.remote.retrofit.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class DateRangeResponse(
-    val data: List<DateRangeData>
+    @SerializedName("data") val data: List<DateRangeData>
 )
 
 data class DateRangeData(
-    val c: Double,
-    val h: Double,
-    val l: Double,
-    val o: Double,
-    val t: String,
-    val v: Int
+    @SerializedName("c") val close: Double,
+    @SerializedName("h") val high: Double,
+    @SerializedName("l") val low: Double,
+    @SerializedName("o") val open: Double,
+    @SerializedName("t") val timestamp: String,
+    @SerializedName("v") val volume: Int
 )

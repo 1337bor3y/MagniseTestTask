@@ -5,20 +5,26 @@ import com.example.magnisetesttask.data.remote.retrofit.dto.DateRangeResponse
 import com.example.magnisetesttask.data.remote.retrofit.dto.ExchangesResponse
 import com.example.magnisetesttask.data.remote.retrofit.dto.InstrumentsResponse
 import com.example.magnisetesttask.data.remote.retrofit.dto.ProvidersResponse
-import com.example.magnisetesttask.data.remote.retrofit.dto.TokenRequest
 import com.example.magnisetesttask.data.remote.retrofit.dto.TokenResponse
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FintachartsApi {
 
+    @FormUrlEncoded
     @POST("/identity/realms/{realm}/protocol/openid-connect/token")
     suspend fun getToken(
         @Path("realm") realm: String,
-        @Body request: TokenRequest
+        @Field("grant_type") grantType: String = "password",
+        @Field("client_id") clientId: String = "app-cli",
+        @Field("username") username: String,
+        @Field("password") password: String
     ): TokenResponse
 
     @GET("api/instruments/v1/instruments")
