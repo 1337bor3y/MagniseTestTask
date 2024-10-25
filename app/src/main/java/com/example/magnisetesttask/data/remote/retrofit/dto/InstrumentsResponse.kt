@@ -2,7 +2,6 @@ package com.example.magnisetesttask.data.remote.retrofit.dto
 
 import com.google.gson.annotations.SerializedName
 
-
 data class InstrumentsResponse(
     @SerializedName("data") val data: List<InstrumentsData>,
     @SerializedName("paging") val paging: Paging
@@ -21,8 +20,13 @@ data class InstrumentsData(
 )
 
 data class Profile(
-    @SerializedName("gics") val gics: List<String>,
+    @SerializedName("gics") val gics: Gics,
     @SerializedName("name") val name: String
+)
+
+data class Gics(
+    val code: String? = null,
+    val description: String? = null
 )
 
 data class Paging(

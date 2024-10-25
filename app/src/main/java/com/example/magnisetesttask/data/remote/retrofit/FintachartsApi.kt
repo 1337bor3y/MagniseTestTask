@@ -17,16 +17,6 @@ import retrofit2.http.Query
 
 interface FintachartsApi {
 
-    @FormUrlEncoded
-    @POST("/identity/realms/{realm}/protocol/openid-connect/token")
-    suspend fun getToken(
-        @Path("realm") realm: String,
-        @Field("grant_type") grantType: String = "password",
-        @Field("client_id") clientId: String = "app-cli",
-        @Field("username") username: String,
-        @Field("password") password: String
-    ): TokenResponse
-
     @GET("api/instruments/v1/instruments")
     suspend fun getInstruments(
         @Query("provider") provider: String,
