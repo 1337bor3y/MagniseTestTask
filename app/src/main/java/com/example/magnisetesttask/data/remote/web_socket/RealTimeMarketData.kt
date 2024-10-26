@@ -17,25 +17,17 @@ import javax.inject.Inject
 class RealTimeMarketData @Inject constructor(
     private val client: OkHttpClient
 ) {
-    fun getRealTimeMarketData(instrumentId: String): Flow<RealTimeData> = callbackFlow {
+    private var webSocket: WebSocket? = null
+    private var prevInstrumentId: String? = null
+
+    fun getRealTimeMarketData(): Flow<RealTimeData> = callbackFlow {
         val request = Request.Builder()
             .url(Constants.BASE_WEB_SOCKET_URL)
             .build()
 
         val webSocketListener = object : WebSocketListener() {
 
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                val subscribeMessage = JSONObject().apply {
-                    put("type", "l1-subscription")
-                    put("id", "1")
-                    put("instrumentId", instrumentId)
-                    put("provider", "simulation")
-                    put("subscribe", true)
-                    put("kinds", JSONArray().put("last"))
-                }.toString()
-
-                webSocket.send(subscribeMessage)
-            }
+            override fun onOpen(webSocket: WebSocket, response: Response) {}
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val jsonResponse = JSONObject(text)
@@ -60,8 +52,26 @@ class RealTimeMarketData @Inject constructor(
             }
         }
 
-        val webSocket = client.newWebSocket(request, webSocketListener)
+        webSocket = client.newWebSocket(request, webSocketListener)
 
-        awaitClose { webSocket.close(1000, "Flow closed") }
+        awaitClose { webSocket?.close(1000, "Flow closed") }
     }
+
+    fun subscribe(instrumentId: String) {
+        prevInstrumentId?.let {
+            webSocket?.send(subscribeMessage(it, false))
+        }
+        webSocket?.send(subscribeMessage(instrumentId, true))
+        prevInstrumentId = instrumentId
+    }
+
+    private fun subscribeMessage(instrumentId: String, subscribe: Boolean) =
+        JSONObject().apply {
+            put("type", "l1-subscription")
+            put("id", "1")
+            put("instrumentId", instrumentId)
+            put("provider", "simulation")
+            put("subscribe", subscribe)
+            put("kinds", JSONArray().put("last"))
+        }.toString()
 }

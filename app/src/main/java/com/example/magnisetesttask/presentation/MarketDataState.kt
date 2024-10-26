@@ -1,5 +1,6 @@
 package com.example.magnisetesttask.presentation
 
+import com.example.magnisetesttask.domain.model.HistoricalPrice
 import com.example.magnisetesttask.domain.model.Symbol
 
 data class MarketDataState(
@@ -7,5 +8,6 @@ data class MarketDataState(
     val symbolId: String = "",
     val selectedSymbol: String = "",
     val price: String = "",
-    val time: String = ""
+    val time: String = "",
+    val historicalPrices: List<HistoricalPrice> = emptyList()
 )

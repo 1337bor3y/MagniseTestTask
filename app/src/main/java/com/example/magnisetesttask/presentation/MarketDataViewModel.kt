@@ -28,25 +28,38 @@ class MarketDataViewModel @Inject constructor(
                     symbols = marketDataRepository.getSymbols()
                 )
             }
+            marketDataRepository.getRealTimeMarketData().collect { data ->
+                _state.update {
+                    it.copy(
+                        time = formatTimestampToLocal(data.timestamp),
+                        price = data.price.toString(),
+                    )
+                }
+            }
         }
     }
 
     fun onEvent(event: MarketDataEvent) {
         when (event) {
-            is MarketDataEvent.ChooseSymbol -> realTimeData(event.symbolId, event.symbolName)
+            is MarketDataEvent.ChooseSymbol -> chooseSymbol(event.symbolId, event.symbolName)
         }
     }
 
-    private fun realTimeData(symbolId: String, symbolName: String) {
+    private fun chooseSymbol(symbolId: String, symbolName: String) {
+        marketDataRepository.subscribeToMarketData(symbolId)
+        _state.update { it.copy(selectedSymbol = symbolName) }
         viewModelScope.launch {
-            marketDataRepository.getMarketData(symbolId).collect { data ->
-                _state.update {
-                    it.copy(
-                        time = formatTimestampToLocal(data.timestamp),
-                        price = data.price.toString(),
-                        selectedSymbol = symbolName
-                    )
-                }
+            _state.update {
+                it.copy(
+                    historicalPrices = marketDataRepository.getHistoricalPrices(
+                        instrumentId = symbolId,
+                        startDate = "2023-08-07"
+                    ).map { price ->
+                        price.copy(
+                            timestamp = formatTimestampToLocal(price.timestamp)
+                        )
+                    }
+                )
             }
         }
     }

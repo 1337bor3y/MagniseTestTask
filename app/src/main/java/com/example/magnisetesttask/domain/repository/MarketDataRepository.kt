@@ -9,7 +9,9 @@ interface MarketDataRepository {
 
     suspend fun getSymbols(): List<Symbol>
 
-    fun getMarketData(instrumentId: String): Flow<MarketData>
+    fun getRealTimeMarketData(): Flow<MarketData>
+
+    fun subscribeToMarketData(instrumentId: String)
 
     suspend fun getHistoricalPrices(instrumentId: String, startDate: String): List<HistoricalPrice>
 }
