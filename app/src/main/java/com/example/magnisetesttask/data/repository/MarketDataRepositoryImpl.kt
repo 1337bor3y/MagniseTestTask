@@ -1,6 +1,5 @@
 package com.example.magnisetesttask.data.repository
 
-import android.util.Log
 import com.example.magnisetesttask.data.remote.retrofit.FintachartsApi
 import com.example.magnisetesttask.data.remote.web_socket.RealTimeMarketData
 import com.example.magnisetesttask.domain.model.HistoricalPrice
@@ -15,22 +14,14 @@ class MarketDataRepositoryImpl @Inject constructor(
     private val realTimeMarketData: RealTimeMarketData
 ) : MarketDataRepository {
 
-    override suspend fun getSymbols(): List<Symbol> {
-        try {
-            val response = fintachartsApi.getInstruments(
-                provider = "oanda",
-                kind = "forex"
-            )
+    override suspend fun getSymbols(provider: String): List<Symbol> {
+        val response = fintachartsApi.getInstruments(provider)
 
-            return response.data.map {
-                Symbol(
-                    id = it.id,
-                    symbol = it.symbol
-                )
-            }
-        } catch (e: Exception) {
-            e.message?.let { Log.d("getSymbols", it) }
-            return emptyList()
+        return response.data.map {
+            Symbol(
+                id = it.id,
+                symbol = it.symbol
+            )
         }
     }
 
@@ -48,14 +39,17 @@ class MarketDataRepositoryImpl @Inject constructor(
 
     override suspend fun getHistoricalPrices(
         instrumentId: String,
-        startDate: String
+        startDate: String,
+        provider: String,
+        interval: Int,
+        periodicity: String
     ): List<HistoricalPrice> {
         val response = fintachartsApi.getDateRange(
             instrumentId = instrumentId,
             startDate = startDate,
-            provider = "simulation",
-            interval = 1,
-            periodicity = "minute"
+            provider = provider,
+            interval = interval,
+            periodicity = periodicity
         )
 
         return response.data.map {

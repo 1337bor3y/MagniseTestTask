@@ -27,7 +27,11 @@ class RealTimeMarketData @Inject constructor(
 
         val webSocketListener = object : WebSocketListener() {
 
-            override fun onOpen(webSocket: WebSocket, response: Response) {}
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                prevInstrumentId?.let {
+                    subscribe(it)
+                }
+            }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val jsonResponse = JSONObject(text)
@@ -44,7 +48,7 @@ class RealTimeMarketData @Inject constructor(
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                close(t)
+                close()
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -54,7 +58,11 @@ class RealTimeMarketData @Inject constructor(
 
         webSocket = client.newWebSocket(request, webSocketListener)
 
-        awaitClose { webSocket?.close(1000, "Flow closed") }
+        awaitClose {
+            webSocket?.close(1000, "Flow closed")
+            webSocket = null
+            prevInstrumentId = null
+        }
     }
 
     fun subscribe(instrumentId: String) {

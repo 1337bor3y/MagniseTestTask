@@ -7,11 +7,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface MarketDataRepository {
 
-    suspend fun getSymbols(): List<Symbol>
+    suspend fun getSymbols(provider: String): List<Symbol>
 
     fun getRealTimeMarketData(): Flow<MarketData>
 
     fun subscribeToMarketData(instrumentId: String)
 
-    suspend fun getHistoricalPrices(instrumentId: String, startDate: String): List<HistoricalPrice>
+    suspend fun getHistoricalPrices(
+        instrumentId: String,
+        startDate: String,
+        provider: String,
+        interval: Int,
+        periodicity: String
+    ): List<HistoricalPrice>
 }

@@ -19,8 +19,7 @@ interface FintachartsApi {
 
     @GET("api/instruments/v1/instruments")
     suspend fun getInstruments(
-        @Query("provider") provider: String,
-        @Query("kind") kind: String
+        @Query("provider") provider: String
     ): InstrumentsResponse
 
     @GET("/api/instruments/v1/providers")

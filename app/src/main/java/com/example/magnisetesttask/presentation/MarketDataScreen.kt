@@ -1,7 +1,9 @@
 package com.example.magnisetesttask.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,11 +14,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun MarketDataScreen(
     viewModel: MarketDataViewModel = hiltViewModel()
 ) {
+    val scrollState = rememberScrollState()
     val state by viewModel.state.collectAsState()
     val onEvent = viewModel::onEvent
     var expanded by remember { mutableStateOf(false) }
@@ -50,6 +62,7 @@ fun MarketDataScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.navigationBars.asPaddingValues())
+            .verticalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.height(56.dp))
         ExposedDropdownMenuBox(
@@ -132,73 +145,107 @@ fun MarketDataScreen(
                 .height(300.dp)
                 .padding(horizontal = 16.dp)
         ) {
-            if (state.historicalPrices.isNotEmpty() && priceRange > 0) {
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
-                ) {
-                    val spacePerPoint = size.width / (state.historicalPrices.size - 1)
-                    val yScale = size.height / priceRange.toFloat()
-
-                    drawLine(
-                        color = Color.Black,
-                        start = Offset(40f, 0f),
-                        end = Offset(40f, size.height),
-                        strokeWidth = 8f
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (state.isGraphLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
                     )
+                }
+                if (state.historicalPrices.isNotEmpty() && priceRange > 0) {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp)
+                    ) {
+                        val spacePerPoint = size.width / (state.historicalPrices.size - 1)
+                        val yScale = size.height / priceRange.toFloat()
 
-                    for (i in 1..3) {
                         drawLine(
                             color = Color.Black,
-                            start = Offset(30f, i * size.height / 4),
-                            end = Offset(40f, i * size.height / 4),
+                            start = Offset(40f, 0f),
+                            end = Offset(40f, size.height),
                             strokeWidth = 8f
                         )
-                    }
 
-                    drawLine(
-                        color = Color.Black,
-                        start = Offset(40f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = 8f
-                    )
-
-                    var previousPoint = Offset(
-                        40f,
-                        size.height - (closePrices[0] - minPrice).toFloat() * yScale
-                    )
-                    for (i in 1 until closePrices.size) {
-                        val currentX = 40f + i * spacePerPoint
-                        val currentY =
-                            size.height - (closePrices[i] - minPrice).toFloat() * yScale
-
-                        val controlPoint = Offset(
-                            (previousPoint.x + currentX) / 2,
-                            previousPoint.y
-                        )
+                        for (i in 1..3) {
+                            drawLine(
+                                color = Color.Black,
+                                start = Offset(30f, i * size.height / 4),
+                                end = Offset(40f, i * size.height / 4),
+                                strokeWidth = 8f
+                            )
+                        }
 
                         drawLine(
                             color = Color.Black,
-                            start = previousPoint,
-                            end = controlPoint,
-                            strokeWidth = 4f
+                            start = Offset(40f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = 8f
                         )
 
-                        drawLine(
-                            color = Color.Black,
-                            start = controlPoint,
-                            end = Offset(currentX, currentY),
-                            strokeWidth = 4f
+                        var previousPoint = Offset(
+                            40f,
+                            size.height - (closePrices[0] - minPrice).toFloat() * yScale
                         )
+                        for (i in 1 until closePrices.size) {
+                            val currentX = 40f + i * spacePerPoint
+                            val currentY =
+                                size.height - (closePrices[i] - minPrice).toFloat() * yScale
 
-                        previousPoint = Offset(currentX, currentY)
+                            val controlPoint = Offset(
+                                (previousPoint.x + currentX) / 2,
+                                previousPoint.y
+                            )
+
+                            drawLine(
+                                color = Color.Black,
+                                start = previousPoint,
+                                end = controlPoint,
+                                strokeWidth = 4f
+                            )
+
+                            drawLine(
+                                color = Color.Black,
+                                start = controlPoint,
+                                end = Offset(currentX, currentY),
+                                strokeWidth = 4f
+                            )
+
+                            previousPoint = Offset(currentX, currentY)
+                        }
                     }
                 }
-            } else {
+            }
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        state.error?.let {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = it,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.error
+                )
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            OutlinedButton(
+                onClick = { onEvent(MarketDataEvent.RetryConnection) },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Retry"
+                )
+                Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    modifier = Modifier.padding(10.dp).align(Alignment.CenterHorizontally),
-                    text = "No data available for selected symbol",
+                    text = "Try again",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
