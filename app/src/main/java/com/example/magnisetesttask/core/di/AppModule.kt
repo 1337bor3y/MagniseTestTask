@@ -47,16 +47,18 @@ object AppModule {
     @Singleton
     fun provideOkHttpClient(
         accessTokenStorage: AccessTokenStorage,
-        tokenApi: TokenApi
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(accessTokenStorage, tokenApi))
+            .addInterceptor(AuthInterceptor(accessTokenStorage))
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideAccessTokenStorage(application: Application): AccessTokenStorage {
-        return DataStoreAccessTokenStorage(application)
+    fun provideAccessTokenStorage(
+        application: Application,
+        tokenApi: TokenApi
+    ): AccessTokenStorage {
+        return DataStoreAccessTokenStorage(application, tokenApi)
     }
 }

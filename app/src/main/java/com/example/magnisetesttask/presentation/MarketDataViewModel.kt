@@ -54,11 +54,7 @@ class MarketDataViewModel @Inject constructor(
                     historicalPrices = marketDataRepository.getHistoricalPrices(
                         instrumentId = symbolId,
                         startDate = "2023-08-07"
-                    ).map { price ->
-                        price.copy(
-                            timestamp = formatTimestampToLocal(price.timestamp)
-                        )
-                    }
+                    )
                 )
             }
         }
